@@ -15,22 +15,22 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
     }
 
     public CustomBinarySearchTree(T element) {
-        this.root = new Node<T>(element, null, null);
+        this.root = new Node<T>(element, null, null, null);
     }
 
     public void add(T element) {
 
-        Node<T> newNode = new Node<T>(element, null, null);
+        Node<T> newNode = new Node<T>(element, null, null, null);
 
         /*
          * If tree is empty, set new element as root and you are done.
          */
-        if (this.root == null) {
-            this.root = newNode;
+        if (this.getRoot() == null) {
+            this.setRoot(newNode);
             return;
         }
 
-        Node<T> currentNode = this.root;
+        Node<T> currentNode = this.getRoot();
         Node<T> parentNode = null;
 
         while (currentNode != null) {
@@ -44,10 +44,19 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
 
         currentNode = newNode;
 
-        if (currentNode.getData().compareTo(parentNode.getData()) <= 0) {
-            parentNode.setLeftNode(currentNode);
-        } else {
-            parentNode.setRightNode(currentNode);
+        if (parentNode == null) {
+            throw new NullPointerException("Somehow parent of newly-inserted node is null. This should not happen, meaning the logic is broken.");
+        }
+
+        try {
+            if (currentNode.getData().compareTo(parentNode.getData()) <= 0) {
+                parentNode.setLeftNode(currentNode);
+            } else {
+                parentNode.setRightNode(currentNode);
+            }
+            currentNode.setParent(parentNode);
+        } catch(NullPointerException e) {
+            throw new NullPointerException("There is a node with null data in the tree.");
         }
     }
 
@@ -79,23 +88,82 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         return currentNode;
     }
 
-    protected class Node<T> {
+    public Node<T> findMaximumRelativeToNode(Node<T> startNode) {
+        Node<T> currentNode = startNode;
+
+        if (currentNode == null) {
+            throw new NullPointerException("Cannot find maximum of a tree starting with a null node.");
+        }
+
+        while(currentNode.getRightNode() != null) {
+            currentNode = currentNode.getRightNode();
+        }
+
+        return currentNode;
+    }
+
+    public Node<T> findSuccessorOfNode(Node<T> startNode) {
+
+        if (startNode == null) {
+            throw new NullPointerException("You cannot search for a successor of a null node.");
+        }
+
+        if (startNode.getRightNode() != null) {
+            return findMinimumRelativeToNode(startNode.getRightNode());
+        } else {
+            Node<T> currentNode = startNode;
+            Node<T> parentNode = currentNode.getParent();
+
+            while (parentNode != null && currentNode == parentNode.getRightNode()) {
+                parentNode = parentNode.getParent();
+                currentNode = currentNode.getParent();
+            }
+
+            return parentNode;
+        }
+    }
+
+    public Node<T> findPredecessorOfNode(Node<T> startNode) {
+
+        if (startNode == null) {
+            throw new NullPointerException("You cannot search for a predecessor of a null node.");
+        }
+
+        if (startNode.getLeftNode() != null) {
+            return findMaximumRelativeToNode(startNode.getLeftNode());
+        } else {
+            Node<T> currentNode = startNode;
+            Node<T> parentNode = currentNode.getParent();
+
+            while (parentNode != null && currentNode == parentNode.getLeftNode()) {
+                parentNode = parentNode.getParent();
+                currentNode = currentNode.getParent();
+            }
+
+            return parentNode;
+        }
+    }
+
+    protected static class Node<T> {
         private T data;
         private Node<T> leftNode;
         private Node<T> rightNode;
 
+        private Node<T> parent;
+
         public Node() {
-            this(null, null, null);
+            this(null, null, null, null);
         }
 
         public Node(T data) {
-            this(data, null, null);
+            this(data, null, null, null);
         }
 
-        public Node(T data, Node<T> leftNode, Node<T> rightNode) {
+        public Node(T data, Node<T> leftNode, Node<T> rightNode, Node<T> parent) {
             this.data = data;
             this.leftNode = leftNode;
             this.rightNode = rightNode;
+            this.parent = parent;
         }
 
         public T getData() {
@@ -121,6 +189,15 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         public void setRightNode(Node<T> rightNode) {
             this.rightNode = rightNode;
         }
+
+        public Node<T> getParent() {
+            return parent;
+        }
+
+        public void setParent(Node<T> parent) {
+            this.parent = parent;
+        }
+
     }
 
 }
