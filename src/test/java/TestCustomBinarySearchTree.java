@@ -111,6 +111,57 @@ public class TestCustomBinarySearchTree<T extends Comparable<T>> extends CustomB
         assertNull(testTree.findPredecessorOfNode(testTree.findMinimumRelativeToNode(testTree.getRoot())));
     }
 
+    @Test
+    public void testFindOnSampleTree() {
+        fillTreeWithPseudoRandomData();
+
+        assertEquals(testTree.find(10), testTree.getRoot());
+        assertEquals(testTree.find(4), testTree.getRoot().getLeftNode().getLeftNode());
+        assertEquals(testTree.find(11), testTree.getRoot().getRightNode().getLeftNode());
+        assertEquals(testTree.find(6), testTree.getRoot().getLeftNode().getLeftNode().getRightNode());
+        assertEquals(testTree.find(1), null);
+        assertEquals(testTree.find(99), null);
+    }
+
+    @Test
+    public void testRemove6FromSampleTree() {
+        fillTreeWithPseudoRandomData();
+
+        testTree.remove(6);
+
+        assertEquals(testTree.getRoot().getData().intValue(), 10);
+        assertEquals(testTree.getRoot().getLeftNode().getData().intValue(), 7);
+        assertEquals(testTree.getRoot().getLeftNode().getLeftNode().getData().intValue(), 4);
+        assertNull(testTree.getRoot().getLeftNode().getLeftNode().getRightNode());
+        assertNull(testTree.find(6));
+    }
+
+    @Test
+    public void testRemove13FromSampleTree() {
+        fillTreeWithPseudoRandomData();
+
+        testTree.remove(13);
+
+        assertEquals(testTree.getRoot().getData().intValue(), 10);
+        assertEquals(testTree.getRoot().getRightNode().getData().intValue(), 11);
+        assertEquals(testTree.getRoot().getRightNode().getRightNode().getData().intValue(), 12);
+        assertNull(testTree.find(13));
+    }
+
+    @Test
+    public void testRemove4FromSampleTree() {
+        fillTreeWithPseudoRandomData();
+
+        testTree.remove(4);
+
+        assertEquals(testTree.getRoot().getData().intValue(), 10);
+        assertEquals(testTree.getRoot().getLeftNode().getData().intValue(), 7);
+        assertEquals(testTree.getRoot().getLeftNode().getLeftNode().getData().intValue(), 6);
+        assertEquals(testTree.getRoot().getLeftNode().getLeftNode().getLeftNode().getData().intValue(), 4);
+        assertNull(testTree.getRoot().getLeftNode().getLeftNode().getRightNode());
+        assertEquals(testTree.find(4).getLeftNode().getData().intValue(), 2);
+    }
+
     /*
      * Fill the tree with the following sample data:
      *

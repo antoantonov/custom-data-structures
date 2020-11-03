@@ -74,6 +74,114 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         return currentNode != null;
     }
 
+    public boolean remove(T element) {
+        Node<T> targetNode = this.find(element);
+
+        if (targetNode == null) {
+            return false;
+        }
+
+        if (!targetNode.hasChildren()) {
+            if (targetNode == this.getRoot()) {
+                this.setRoot(null);
+            } else {
+                Node<T> parentNode = targetNode.getParent();
+
+                if (targetNode == parentNode.getLeftNode()) {
+                    parentNode.setLeftNode(null);
+                } else {
+                    parentNode.setRightNode(null);
+                }
+            }
+        } else if (targetNode.hasExactlyOneChild()) {
+            if (targetNode == this.getRoot()) {
+                /*
+                 * Check which child it is and update pointers.
+                 */
+                if (targetNode.getLeftNode() != null) {
+                    this.setRoot(targetNode.getLeftNode());
+                    targetNode.getLeftNode().setParent(null);
+                } else {
+                    this.setRoot(targetNode.getRightNode());
+                    targetNode.getRightNode().setParent(null);
+                }
+            } else {
+                Node<T> parentNode = targetNode.getParent();
+                Node<T> childNode = null;
+
+                /*
+                 * Check which (left/right) child the CHILD node is and update childNode.
+                 */
+                if (targetNode.getLeftNode() != null) {
+                    childNode = targetNode.getLeftNode();
+                } else {
+                    childNode = targetNode.getRightNode();
+                }
+
+                /*
+                 * Check which (left/right) child the TARGET node is and update pointers.
+                 */
+                if (parentNode.getLeftNode() == targetNode) {
+                    parentNode.setLeftNode(childNode);
+                } else {
+                    parentNode.setRightNode(childNode);
+                }
+
+                childNode.setParent(parentNode);
+            }
+        }
+
+        if (targetNode.hasExactlyTwoChildren()) {
+            /*
+             * First splice out the successor of the target node.
+             */
+            Node<T> successorNode = this.findSuccessorOfNode(targetNode);
+            this.remove(successorNode.getData());
+
+            /*
+             * Then replace the target node with its successor.
+             */
+            if (targetNode == this.getRoot()) {
+                this.setRoot(successorNode);
+            } else {
+                Node<T> parentNode = targetNode.getParent();
+
+                if (targetNode == parentNode.getLeftNode()) {
+                    parentNode.setLeftNode(successorNode);
+                } else {
+                    parentNode.setRightNode(successorNode);
+                }
+            }
+
+            successorNode.setLeftNode(targetNode.getLeftNode());
+            successorNode.setRightNode(targetNode.getRightNode());
+            successorNode.setParent(targetNode.getParent());
+        }
+
+        /*
+         * Clean up.
+         */
+        targetNode.setLeftNode(null);
+        targetNode.setRightNode(null);
+        targetNode.setParent(null);
+
+        return true;
+    }
+
+    public Node<T> find(T element) {
+        Node<T> currentNode = this.getRoot();
+
+        while (currentNode != null && !currentNode.getData().equals(element)) {
+            if (element.compareTo(currentNode.getData()) < 0) {
+                currentNode = currentNode.getLeftNode();
+            } else {
+                currentNode = currentNode.getRightNode();
+            }
+        }
+
+        return currentNode;
+    }
+
     public Node<T> findMinimumRelativeToNode(Node<T> startNode) {
         Node<T> currentNode = startNode;
 
@@ -198,6 +306,17 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
             this.parent = parent;
         }
 
+        public boolean hasChildren() {
+            return this.getLeftNode() != null || this.getRightNode() != null;
+        }
+
+        public boolean hasExactlyOneChild() {
+            return this.getLeftNode() != null ^ this.getRightNode() != null;
+        }
+
+        public boolean hasExactlyTwoChildren() {
+            return this.getLeftNode() != null && this.getRightNode() != null;
+        }
     }
 
 }
