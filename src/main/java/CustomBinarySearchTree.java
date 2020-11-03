@@ -1,7 +1,13 @@
 public class CustomBinarySearchTree<T extends Comparable<T>> {
 
+    /*
+     * Fields
+     */
     private Node<T> root;
 
+    /*
+     * Getters/Setters
+     */
     public Node<T> getRoot() {
         return root;
     }
@@ -10,6 +16,9 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         this.root = root;
     }
 
+    /*
+     * Constructors
+     */
     public CustomBinarySearchTree() {
         this.root = null;
     }
@@ -18,6 +27,9 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         this.root = new Node<T>(element, null, null, null);
     }
 
+    /*
+     * Public methods
+     */
     public void add(T element) {
 
         Node<T> newNode = new Node<T>(element, null, null, null);
@@ -182,7 +194,10 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         return currentNode;
     }
 
-    public Node<T> findMinimumRelativeToNode(Node<T> startNode) {
+    /*
+     * Helper methods
+     */
+    protected Node<T> findMinimumRelativeToNode(Node<T> startNode) {
         Node<T> currentNode = startNode;
 
         if (currentNode == null) {
@@ -196,7 +211,7 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         return currentNode;
     }
 
-    public Node<T> findMaximumRelativeToNode(Node<T> startNode) {
+    protected Node<T> findMaximumRelativeToNode(Node<T> startNode) {
         Node<T> currentNode = startNode;
 
         if (currentNode == null) {
@@ -210,7 +225,7 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         return currentNode;
     }
 
-    public Node<T> findSuccessorOfNode(Node<T> startNode) {
+    protected Node<T> findSuccessorOfNode(Node<T> startNode) {
 
         if (startNode == null) {
             throw new NullPointerException("You cannot search for a successor of a null node.");
@@ -231,7 +246,7 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         }
     }
 
-    public Node<T> findPredecessorOfNode(Node<T> startNode) {
+    protected Node<T> findPredecessorOfNode(Node<T> startNode) {
 
         if (startNode == null) {
             throw new NullPointerException("You cannot search for a predecessor of a null node.");
@@ -252,6 +267,9 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         }
     }
 
+    /*
+     * Inner class Node<T>
+     */
     protected static class Node<T> {
         private T data;
         private Node<T> leftNode;
