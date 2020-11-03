@@ -162,6 +162,40 @@ public class TestCustomBinarySearchTree<T extends Comparable<T>> extends CustomB
         assertEquals(testTree.find(4).getLeftNode().getData().intValue(), 2);
     }
 
+    @Test
+    public void testLowerOnSampleTree() {
+        fillTreeWithPseudoRandomData();
+
+        assertEquals(testTree.lower(10).getData().intValue(), 7);
+        assertEquals(testTree.lower(7).getData().intValue(), 6);
+        assertEquals(testTree.lower(4).getData().intValue(), 2);
+        assertEquals(testTree.lower(6).getData().intValue(), 4);
+        assertNull(testTree.lower(2));
+        assertEquals(testTree.lower(13).getData().intValue(), 12);
+        assertEquals(testTree.lower(12).getData().intValue(), 11);
+
+        assertEquals(testTree.lower(8).getData().intValue(), 7);
+        assertNull(testTree.lower(1));
+        assertEquals(testTree.lower(99).getData().intValue(), 13);
+    }
+
+    @Test
+    public void testHigherOnSampleTree() {
+        fillTreeWithPseudoRandomData();
+
+        assertEquals(testTree.higher(10).getData().intValue(), 11);
+        assertEquals(testTree.higher(7).getData().intValue(), 10);
+        assertEquals(testTree.higher(4).getData().intValue(), 6);
+        assertEquals(testTree.higher(6).getData().intValue(), 7);
+        assertEquals(testTree.higher(2).getData().intValue(), 4);
+        assertNull(testTree.higher(13));
+        assertEquals(testTree.higher(12).getData().intValue(), 13);
+
+        assertEquals(testTree.higher(8).getData().intValue(), 10);
+        assertNull(testTree.higher(99));
+        assertEquals(testTree.higher(1).getData().intValue(), 2);
+    }
+
     /*
      * Fill the tree with the following sample data:
      *

@@ -194,9 +194,84 @@ public class CustomBinarySearchTree<T extends Comparable<T>> {
         return currentNode;
     }
 
+    public Node<T> lower(T element) {
+        Node<T> tempNode = this.findNodeOrParentIfNull(element);
+
+        if (tempNode.getData().compareTo(element) > 0) {
+            /*
+             * We are searching for a lower value than the minimum in our tree.
+             */
+            return null;
+        } else if (tempNode.getData().compareTo(element) < 0) {
+            /*
+             * We did not find a node with value equal to element,
+             * so we are currently at the largest node with value less than that of element.
+             */
+            return tempNode;
+        } else {
+            /*
+             * We found AT LEAST one node with value equal to element,
+             * so we have to search for the first node in its predecessor chain with value different than element.
+             */
+            Node<T> targetNode = tempNode;
+
+            /*
+             * We have to loop in case there are multiple nodes with the value in tempNode.
+             */
+            while (targetNode != null && targetNode.getData().equals(element)) {
+                targetNode = this.findPredecessorOfNode(targetNode);
+            }
+
+            return targetNode;
+        }
+    }
+
+    public Node<T> higher(T element) {
+        Node<T> tempNode = this.findNodeOrParentIfNull(element);
+
+        if (tempNode.getData().compareTo(element) > 0) {
+            /*
+             * We did not find a node with value equal to element,
+             * so we are currently at the smallest node with value greater than that of element.
+             */
+            return tempNode;
+        } else {
+            /*
+             * We are currently at a node with value equal to element OR smaller than it,
+             * so we have to search for the first node in its successor chain with value larger than element.
+             */
+            Node<T> targetNode = tempNode;
+
+            /*
+             * We have to loop in case there are multiple nodes with the value in tempNode.
+             */
+            while (targetNode != null && targetNode.getData().compareTo(element) <= 0) {
+                targetNode = this.findSuccessorOfNode(targetNode);
+            }
+
+            return targetNode;
+        }
+    }
+
     /*
      * Helper methods
      */
+    protected Node<T> findNodeOrParentIfNull(T element) {
+        Node<T> parentNode = null;
+        Node<T> currentNode = this.getRoot();
+
+        while (currentNode != null && !currentNode.getData().equals(element)) {
+            parentNode = currentNode;
+            if (element.compareTo(currentNode.getData()) < 0) {
+                currentNode = currentNode.getLeftNode();
+            } else {
+                currentNode = currentNode.getRightNode();
+            }
+        }
+
+        return currentNode != null ? currentNode : parentNode;
+    }
+
     protected Node<T> findMinimumRelativeToNode(Node<T> startNode) {
         Node<T> currentNode = startNode;
 
